@@ -4,11 +4,13 @@
 require './Classes/Usuario.php';
 
 use Classes\Usuario;
+
 /* API RESTFul em PHP puro */
 
 //Informa para o cliente que será retornado JSON
 header('Access-Control-Allow-Origin: *');
 header('Content-type: application/json');
+header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE');
 
 //Captura os parâmetros
 $param = filter_input_array(INPUT_GET, FILTER_DEFAULT);
@@ -42,29 +44,26 @@ if ($method == "GET") {
         echo json_encode($usuarios);
     }
 } else if ($method == "POST") {
-
+    
     $usuario = json_decode($body);
-    $usu = new Usuario();
+    $usu = new Usuario();    
     $usu->inserir($usuario->nome, $usuario->email, $usuario->login, $usuario->senha);
     echo json_encode($usuario);
     
-} else if ($method == "PUT") {   
-    $usu = new Usuario();
-    if(isset($param['codigo'])){
-        $codigo = $param['codigo'];
-        $usuario = json_decode($body);
-        $usu->editar($codigo, $usuario->nome, $usuario->email, $usuario->login, $usuario->senha);
-        echo json_encode($usu);
-    }
-} else if ($method == "DELETE") {
-    $usu = new Usuario();
-    if(isset($param['codigo'])){
-        $codigo =$param['codigo'];
-        $usuario = json_decode($body);
-        $usu->delete($codigo);
-        echo json_encode($usu);
-        
-    }
-            
-}
+} else if ($method == "PUT") {
     
+        $usuario = json_decode($body);
+        $usu = new Usuario();    
+        $usu->alterar($usuario->nome, $usuario->email, $usuario->login, $usuario->senha, $usuario->codigo);
+        echo json_encode($usuario);
+
+} else if ($method == "DELETE") {
+    
+    if (isset($param ['cod'])) {
+        $usu = new Usuario();    
+        $usu->delete($param ['cod']);
+        echo json_encode($param ['cod']);
+    }
+    
+}
+?>
